@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Color Flood</title>
+</head>
+
+<body bgcolor="#E6E6FA">
+    <ul>
+        <form id="register-form" method="POST">
+            <input id="nameOne" type="text" placeholder="Name" value="">
+            <input id="pw" type="password" placeholder="Password" value="">
+            <button onclick="return store()">Register</button>
+        </form>
+
+        <form id="login-form" method="POST">
+            <input id="userName" type="text" placeholder="Enter Username" value="">
+            <input id="userPw" type="password" placeholder="Enter Password" value="">
+            <button onclick="return check()">Login</button>
+        </form>
+    </ul>
+
+    <ul style="position: absolute; left:810px;">
+        <square id="red-square" class="active" style="position: absolute; left:0px; top: 600px; width: 50px; height: 50px;" nValue="0"></square>
+        <square id="blue-square" class="active" style="position: absolute; left:50px; top: 600px; width: 50px; height: 50px;" nValue="1"></square>
+        <square id="yellow-square" class="active" style="position: absolute; left:100px; top: 600px; width: 50px; height: 50px;" nValue="2"></square>
+        <square id="green-square" class="active" style="position: absolute; left:150px; top: 600px; width: 50px; height: 50px;" nValue="3"></square>
+        <square id="orange-square" class="active" style="position: absolute; left:200px; top: 600px; width: 50px; height: 50px;" nValue="4"></square>
+        <square id="brown-square" class="active" style="position: absolute; left:250px; top: 600px; width: 50px; height: 50px; " nValue="5"></square>
+    </ul>
+
+    <canvas id="myCanvas" width="480" height="480" style="position: absolute; left: 700px;"></canvas>
+
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/game.js"></script>
+    <script>
+                             var socket = io();
+
+                             function drawButtons() {
+                                 document.getElementById('red-square').style.backgroundColor = 'red';
+                                 document.getElementById('blue-square').style.backgroundColor = 'blue';
+                                 document.getElementById('yellow-square').style.backgroundColor = 'yellow';
+                                 document.getElementById('green-square').style.backgroundColor = 'green';
+                                 document.getElementById('orange-square').style.backgroundColor = 'orange';
+                                 document.getElementById('brown-square').style.backgroundColor = 'brown';
+                             }
+
+                             function store() {
+                                 socket.emit('writing', [nameOne.value, pw.value]);
+                                 document.getElementById('nameOne').value = '';
+                                 document.getElementById('pw').value = '';
+                                 return false;
+                             }
+
+                             function check() {
+                                 socket.emit('login', [userName.value, userPw.value]);
+                                 document.getElementById('userName').value = '';
+                                 document.getElementById('userPw').value = '';
+                                 return false;
+                             }
+
+                             $(document).ready(function () {
+                                 $('square').on('click', function () {
+                                     if ($(this).hasClass('active')) {
+                                         var number = parseInt($(this).attr('nValue'));
+                                         socket.emit('spread', number);
+                                     }
+                                 });
+                             });
+
+                             socket.on('continue', function () {
+                                 $('square').attr('class', 'active');
+                                 drawButtons();
+                             });
+
+                             socket.on('wait', function () {
+                                 $('square').attr('class', 'inactive');
+                                 $('square').css('background-color', 'grey');
+                             });
+
+                             socket.on('waitingForPlayer', function () {
+                                 alert('Waiting for Player 2...');
+                             });
+
+                             socket.on('failedLogin', function () {
+                                 alert('Wrong data or already logged in.');
+                             });
+
+                             socket.on('victory', function () {
+                                 alert("VICTORY!!! Your opponent left the game.");
+                             });
+
+                             socket.on('victoryScore', function (score) {
+                                 alert("VICTORY!!! " + score + "/121. Waiting for your opponent...");
+                             });
+
+                             socket.on('defeatScore', function (score) {
+                                 var x = confirm("Defeat... " + score + "/121. New Game against the same oppenent?");
+                                 if (x === true) {
+                                     socket.emit('sameOpponent');
+                                 }
+                                 else {
+                                     socket.emit('newOpponent');
+                                 }
+                             });
+
+                             socket.on('draw', function (field) {
+                                 draw(field);
+                                 var xUL = field[0][0];
+                                 var xLR = field[10][10];
+
+                                 switch (xUL) {
+                                     case 0:
+                                         document.getElementById('red-square').style.backgroundColor = 'grey';
+                                         document.getElementById('red-square').setAttribute('class', 'inactive');
+                                         break;
+
+                                     case 1:
+                                         document.getElementById('blue-square').style.backgroundColor = 'grey';
+                                         document.getElementById('blue-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 2:
+                                         document.getElementById('yellow-square').style.backgroundColor = 'grey';
+                                         document.getElementById('yellow-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 3:
+                                         document.getElementById('green-square').style.backgroundColor = 'grey';
+                                         document.getElementById('green-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 4:
+                                         document.getElementById('orange-square').style.backgroundColor = 'grey';
+                                         document.getElementById('orange-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 5:
+                                         document.getElementById('brown-square').style.backgroundColor = 'grey';
+                                         document.getElementById('brown-square').setAttribute('class', 'inactive');
+                                         break;
+                                 }
+
+                                 switch (xLR) {
+                                     case 0:
+                                         document.getElementById('red-square').style.backgroundColor = 'grey';
+                                         document.getElementById('red-square').setAttribute('class', 'inactive');
+                                         break;
+
+                                     case 1:
+                                         document.getElementById('blue-square').style.backgroundColor = 'grey';
+                                         document.getElementById('blue-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 2:
+                                         document.getElementById('yellow-square').style.backgroundColor = 'grey';
+                                         document.getElementById('yellow-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 3:
+                                         document.getElementById('green-square').style.backgroundColor = 'grey';
+                                         document.getElementById('green-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 4:
+                                         document.getElementById('orange-square').style.backgroundColor = 'grey';
+                                         document.getElementById('orange-square').setAttribute('class', 'inactive');
+                                         break;
+                                     case 5:
+                                         document.getElementById('brown-square').style.backgroundColor = 'grey';
+                                         document.getElementById('brown-square').setAttribute('class', 'inactive');
+                                         break;
+                                 }
+                             });
+
+                             var c = document.getElementById("myCanvas");
+                             var ctx = c.getContext("2d");
+
+                             function draw(field) {
+                                 for (i = 0; i <= field.length; i++) {
+                                     for (j = 0; j < field.length; j++) {
+                                         switch (field[j][i]) {
+                                             case 0: ctx.fillStyle = "red"; break;
+                                             case 1: ctx.fillStyle = "blue"; break;
+                                             case 2: ctx.fillStyle = "yellow"; break;
+                                             case 3: ctx.fillStyle = "green"; break;
+                                             case 4: ctx.fillStyle = "orange"; break;
+                                             case 5: ctx.fillStyle = "saddlebrown"; break;
+                                             case 6: ctx.fillStyle = "grey"; break;
+                                         }
+                                         ctx.fillRect(40 * (i + 1), 40 * (j + 1), 40, 40);
+                                     }
+                                 }
+                             }
+    </script>
+</body>
+
+</html>

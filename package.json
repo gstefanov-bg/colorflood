@@ -1,0 +1,29 @@
+{
+  "name": "socket-chat-example",
+  "version": "0.0.1",
+  "description": "my first socket.io app",
+  "dependencies": {
+    "aws-sdk": "^2.696.0",
+    "express": "^4.10.2",
+    "mongodb": "^2.2.28",
+    "socket.io": "^1.7.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-env": "^1.1.7"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goshoster/ColorFloodJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goshoster/ColorFloodJS/issues"
+  },
+  "homepage": "https://github.com/goshoster/ColorFloodJS#readme"
+}
