@@ -29,6 +29,8 @@ var params_register = {
     }
   },
   MessageBody: "A user has registered.",
+	MessageDeduplicationId: "TheRegister",  // Required for FIFO queues
+  MessageGroupId: "Group1",  // Required for FIFO queues
   QueueUrl: myArgs[0]
 };
 
