@@ -21,7 +21,6 @@ AWS.config.update({region: 'eu-central-1'});
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
 var params_register = {
-  DelaySeconds: 10,
   MessageAttributes: {
     "Event": {
       DataType: "String",
