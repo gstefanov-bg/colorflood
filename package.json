@@ -5,7 +5,7 @@
   "dependencies": {
     "aws-sdk": "^2.696.0",
     "express": "^4.10.2",
-    "mongodb": "^2.2.28",
+    "mongodb": "^3.1.13",
     "socket.io": "^1.7.2"
   },
   "devDependencies": {
